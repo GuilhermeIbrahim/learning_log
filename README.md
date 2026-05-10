@@ -1,1 +1,3 @@
-Projeto feito somente como meio para aprendizado do básico de Django.
+Projeto feito como meio para aprendizado do básico de Django.
+Neste projeto pode ser observada a presença da possibilidade de criação de contas com nome de usuário e senha, além de CRUD funcional com possibilidades de adicionar e ler tópicos e, dentro deles, adicionar, editar, deletar e ler anotações, em que cada conta de usuário somente pode fazer estas ações para o que a pertence.
+Este projeto também possui estilização feita com bootstrap5, tendo como meio para utilização dele o django-bootstrap5, aplicação de terceiros instalada no projeto.
