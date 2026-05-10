@@ -1,4 +1,5 @@
 {% extends "learning_log/base.html" %}
+{% load django_bootstrap5 %}
 
 {% block content %}
 
@@ -14,5 +15,6 @@
         {% endfor %}
     </ul>
 
-    <a href="{% url 'new_topic' %}">Adicionar novos tópicos</a>
+    {% url 'new_topic' as new_topic %}
+    <p>{% bootstrap_button button_type="link" href=new_topic content="Adicionar novos tópicos" %}
 {% endblock content %}

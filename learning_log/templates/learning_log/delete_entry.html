@@ -1,15 +1,20 @@
 {% extends "learning_log/base.html" %}
+{% load django_bootstrap5 %}
 
 {% block content %}
 
-    <p>Tem certeza que deseja apagar esta anotação?</p>
+    <h3>Tem certeza que deseja apagar esta anotação?</h3>
 
-    <p>{{ entry.text }}</p>
+    <div class="card mb-3">
+        <div class="card-body">
+            {{ entry.text|linebreaks }}
+        </div>
+    </div>
 
     <form action="{% url 'delete_entry' entry.id %}" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button name="submit">Confirmar exclusão</button>
+
+        {% bootstrap_button button_type="submit" extra_classes="btn-danger" content="Confirmar exclusão" %}
     </form>
 
 {% endblock content %}

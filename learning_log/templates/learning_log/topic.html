@@ -1,19 +1,23 @@
 {% extends "learning_log/base.html" %}
+{% load django_bootstrap5 %}
 
 {% block content %}
     <p>Tópico: {{ topic }}</p>
 
     <p>Anotações: </p>
 
-    <p><a href="{% url 'new_entry' topic.id %}">Adicione uma nova anotação</a></p>
+    {% url 'new_entry' topic.id as new_url %}
+    <p>{% bootstrap_button button_type="link" href=new_url content="Adicione uma nova anotação" %}
 
     <ul>
         {% for entry in entries %}
             <li>
                 <p>{{ entry.date_added | date:'M d, Y H:i' }}</p>
                 <p>{{ entry.text | linebreaks }}</p>
-                <p><a href="{% url 'edit_entry' entry.id %}">Editar anotação</a></p>
-                <p><a href="{% url 'delete_entry' entry.id %}">Deletar anotação</a></p>
+                {% url 'edit_entry' entry.id as edit_url %}
+                {% url 'delete_entry' entry.id as delete_url %}
+                <p>{% bootstrap_button button_type="link" href=edit_url content="Editar anotação" %}
+                {% bootstrap_button button_type="link" href=delete_url content="Deletar anotação" %}</p> 
             </li>
 
             {% empty %}
