@@ -1,0 +1,15 @@
+{% extends "learning_log/base.html" %}
+
+{% block content %}
+
+    <p>Tem certeza que deseja apagar esta anotação?</p>
+
+    <p>{{ entry.text }}</p>
+
+    <form action="{% url 'delete_entry' entry.id %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button name="submit">Confirmar exclusão</button>
+    </form>
+
+{% endblock content %}
