@@ -9,9 +9,12 @@
 {% endblock header %}
 
 {% block content %}
+    {% if user.is_authenticated %}
+        <h2>Adicione novas anotações para todo conteúdo que você aprender sobre um determinado tópico.</h2>
+    {% else %}
     <h2>
         <a href="{% url 'register' %}">Crie uma conta</a> para utilizar o Learning Log e liste os tópicos que você está aprendendo.
     </h2>
-    <h2>Adicione novas anotações para todo conteúdo que você aprender sobre um determinado tópico.</h2>
+    {% endif %}
     
 {% endblock content %}
