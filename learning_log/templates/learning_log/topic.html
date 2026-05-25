@@ -14,6 +14,14 @@
             <li>
                 <p>{{ entry.date_added | date:'M d, Y H:i' }}</p>
                 <p>{{ entry.text | linebreaks }}</p>
+                <p>
+                    Categorias:
+                    {% for category in entry.categories.all %}
+                        <span class="badge bg-secondary">{{ category.name }}</span>
+                        {% empty %}
+                        <span class="text-muted">Sem categoria</span>
+                    {% endfor %}
+                </p>
                 {% url 'edit_entry' entry.id as edit_url %}
                 {% url 'delete_entry' entry.id as delete_url %}
                 <p>{% bootstrap_button button_type="link" href=edit_url content="Editar anotação" %}

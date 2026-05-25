@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Topic, Entry
-from .forms import TopicForm, EntryForm
+from .forms import CategoryForm, TopicForm, EntryForm
 from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -58,14 +58,15 @@ def new_entry(request, topic_id):
     
     if request.method != 'POST':
         # Nenhum dado submetido; cria um formulário em branco.
-        form = EntryForm
+        form = EntryForm(user=request.user)
     else:
         # Dados de POST submetidos; processa os dados.
-        form = EntryForm(data=request.POST)
+        form = EntryForm(user=request.user, data=request.POST)
         if form.is_valid():
             new_entry = form.save(commit=False)
             new_entry.topic = topic
             new_entry.save()
+            form.save_m2m()  # Salva as relações ManyToMany
             return HttpResponseRedirect(reverse('topic', args=[topic_id]))
     
     context = {'topic':topic, 'form':form}
@@ -83,10 +84,10 @@ def edit_entry(request, entry_id):
     
     if request.method != 'POST':
         # Requisição inicial; preenche previamente o formulário com a entrada atual.
-        form = EntryForm(instance=entry)
+        form = EntryForm(instance=entry, user=request.user)
     else:
         # Dados de Post submetidos; processa os dados.
-        form = EntryForm(instance=entry, data=request.POST)
+        form = EntryForm(instance=entry, data=request.POST, user=request.user)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('topic', args=[topic.id]))
@@ -112,4 +113,20 @@ def delete_entry(request, entry_id):
     context = {'entry': entry, 'topic': topic}
     return render(request, 'learning_log/delete_entry.html', context)
     
-    
+@login_required
+def new_category(request):
+    """Adiciona uma nova categoria."""
+    if request.method != 'POST':
+        # Nenhum dado submetido; cria um formulário em branco.
+        form = CategoryForm(user=request.user)
+    else:
+        # Dados de POST submetidos; processa os dados.
+        form = CategoryForm(request.POST, user=request.user)
+        if form.is_valid():
+            new_category = form.save(commit=False)
+            new_category.owner = request.user
+            new_category.save()
+            return HttpResponseRedirect(reverse('topics'))
+
+    context = {'form': form}
+    return render(request, 'learning_log/new_category.html', context)

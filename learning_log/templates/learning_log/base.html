@@ -44,6 +44,13 @@
                             Tópicos
                         </a>
                     </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'new_category' %}">
+                                Nova categoria
+                            </a>
+                        </li>
+                    {% endif %}
                 </ul>
 
                 <ul class="navbar-nav ms-auto">
