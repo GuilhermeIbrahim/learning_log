@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Topic, Entry
+from .models import Topic, Entry, Category
 from .forms import CategoryForm, TopicForm, EntryForm
 from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
@@ -26,7 +26,20 @@ def topic(request, topic_id):
         raise Http404
     
     entries = topic.entry_set.order_by('-date_added')
-    context = {'topic': topic, 'entries': entries}
+    
+    query = request.GET.get('q', '').strip()
+    category_id = request.GET.get('category', '')
+    
+    if query:
+        entries = entries.filter(text__icontains=query)
+    
+    if category_id:
+        entries = entries.filter(categories__id=category_id)
+    
+    entries = entries.distinct()
+    categories = Category.objects.filter(owner=request.user).order_by('name')
+    
+    context = {'topic': topic, 'entries': entries, 'categories': categories, 'query': query, 'selected_category': category_id}
     return render(request, 'learning_log/topic.html', context)
 
 @login_required

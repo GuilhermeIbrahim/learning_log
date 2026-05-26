@@ -6,9 +6,31 @@
 
     <p>Anotações: </p>
 
+    <form method="get" class="mb-4">
+        <div class="row g-2">
+            <div class="col-md-6">
+                <input type="text" name="q" class="form-control" placeholder="Buscar por texto..." value="{{ query }}">
+            </div>
+            <div class="col-md-4">
+                <select name="category" class="form-select">
+                    <option value="">Todas as categorias</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2 d-grid">
+                <button class="btn btn-primary" type="submit">Filtrar</button>
+            </div>
+        </div>
+    </form>
+    {% url 'topic' topic.id as topic_url %}
+    <p>{% bootstrap_button button_type="link" href=topic_url extra_classes="btn-danger" content="Limpar filtros" %}</p>
+
     {% url 'new_entry' topic.id as new_url %}
     <p>{% bootstrap_button button_type="link" href=new_url content="Adicione uma nova anotação" %}
 
+    {% if entries %}
     <ul>
         {% for entry in entries %}
             <li>
@@ -25,7 +47,7 @@
                 {% url 'edit_entry' entry.id as edit_url %}
                 {% url 'delete_entry' entry.id as delete_url %}
                 <p>{% bootstrap_button button_type="link" href=edit_url content="Editar anotação" %}
-                {% bootstrap_button button_type="link" href=delete_url content="Deletar anotação" %}</p> 
+                {% bootstrap_button button_type="link" href=delete_url extra_classes="btn-danger" content="Deletar anotação" %}</p> 
             </li>
 
             {% empty %}
@@ -34,4 +56,9 @@
             </li>
         {% endfor %}
     </ul>
+    {% else %}
+        <p>Não há registros para este filtro.</p>
+    {% endif %}
+
+    
 {% endblock content %}
