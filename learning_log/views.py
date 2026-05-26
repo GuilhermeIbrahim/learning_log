@@ -4,6 +4,7 @@ from .forms import CategoryForm, TopicForm, EntryForm
 from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 
 def index(request):
     """Página principal do Learning_log"""
@@ -25,18 +26,21 @@ def topic(request, topic_id):
     if topic.owner != request.user:
         raise Http404
     
-    entries = topic.entry_set.order_by('-date_added')
+    entries_list = topic.entry_set.order_by('-date_added')
     
     query = request.GET.get('q', '').strip()
     category_id = request.GET.get('category', '')
     
     if query:
-        entries = entries.filter(text__icontains=query)
+        entries_list = entries_list.filter(text__icontains=query)
     
     if category_id:
-        entries = entries.filter(categories__id=category_id)
+        entries_list = entries_list.filter(categories__id=category_id)
     
-    entries = entries.distinct()
+    entries_list = entries_list.distinct()
+    paginator = Paginator(entries_list, 5)
+    page_number = request.GET.get('page')
+    entries = paginator.get_page(page_number)
     categories = Category.objects.filter(owner=request.user).order_by('name')
     
     context = {'topic': topic, 'entries': entries, 'categories': categories, 'query': query, 'selected_category': category_id}
