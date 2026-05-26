@@ -26,4 +26,5 @@ urlpatterns = [
     path('edit_entry/<entry_id>', views.edit_entry, name='edit_entry'),
     path('delete_entry/<entry_id>', views.delete_entry, name='delete_entry'),
     path('new_category', views.new_category, name='new_category'),
+    path('dashboard', views.dashboard, name='dashboard'),
 ]

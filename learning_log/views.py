@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Count
 
 def index(request):
     """Página principal do Learning_log"""
@@ -147,3 +148,15 @@ def new_category(request):
 
     context = {'form': form}
     return render(request, 'learning_log/new_category.html', context)
+
+@login_required
+def dashboard(request):
+    """Mostra o dashboard do usuário com estatísticas e gráficos."""
+    topics_count = Topic.objects.filter(owner=request.user).count()
+    entries_count = Entry.objects.filter(topic__owner=request.user).count()
+    categories_count = Category.objects.filter(owner=request.user).count()
+    recent_entries = Entry.objects.filter(topic__owner=request.user).order_by('-date_added')[:5]
+    top_categories = Category.objects.filter(owner=request.user).annotate(total_entries=Count('entry')).order_by('-total_entries')[:5]
+
+    context = {'topics_count': topics_count, 'entries_count': entries_count, 'categories_count': categories_count, 'recent_entries': recent_entries, 'top_categories': top_categories}
+    return render(request, 'learning_log/dashboard.html', context)

@@ -1,0 +1,102 @@
+{% extends 'learning_log/base.html' %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+    <h1 class="mb-5">Dashboard</h1>
+
+    <!-- Estatísticas -->
+    <div class="row mb-5">
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h2 class="card-title">{{ topics_count }}</h2>
+                    <p class="card-text text-muted">Tópicos</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h2 class="card-title">{{ entries_count }}</h2>
+                    <p class="card-text text-muted">Anotações</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h2 class="card-title">{{ categories_count }}</h2>
+                    <p class="card-text text-muted">Categorias</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <div class="row">
+        <!-- Últimas anotações -->
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Últimas Anotações</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_entries %}
+                        {% for entry in recent_entries %}
+                            <div class="mb-3">
+                                <h6 class="mb-1">{{ entry.topic }}</h6>
+                                <p class="mb-2 text-muted">{{ entry.text|truncatewords:20 }}</p>
+                                <small class="text-muted">{{ entry.date_added|date:"d/m/Y H:i" }}</small>
+                                {% if entry.categories.all %}
+                                    <div class="mt-2">
+                                        {% for category in entry.categories.all %}
+                                            <span class="badge bg-secondary">{{ category.name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% if not forloop.last %}<hr>{% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">Nenhuma anotação encontrada.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Categorias mais usadas -->
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Categorias Mais Usadas</h5>
+                </div>
+                <div class="card-body">
+                    {% if top_categories %}
+                        {% for category in top_categories %}
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>{{ category.name }}</span>
+                                    <span class="badge bg-primary">{{ category.total_entries }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">Nenhuma categoria encontrada.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botões de ação -->
+    <div class="mt-5">
+        {% url 'topics' as topics_url %}
+        {% bootstrap_button button_type="link" href=topics_url content="Ver Tópicos" %}
+
+        {% url 'new_topic' as new_topic_url %}
+        {% bootstrap_button button_type="link" href=new_topic_url content="Novo Tópico" %}
+
+        {% url 'new_category' as new_category_url %}
+        {% bootstrap_button button_type="link" href=new_category_url content="Nova Categoria" %}
+    </div>
+{% endblock content %}
