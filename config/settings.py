@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,9 +21,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-m892iv^eku74a*f&nsm27d$__^oddgrlo_z=jv$vu6!mktavgi'
+SECRET_KEY = config('DJANGO_SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# Debug should be False in production
 DEBUG = False
 
 ALLOWED_HOSTS = ['*']
@@ -34,14 +36,20 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.sites',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'learning_log',
     'users',
-    
+
     #Apps de terceiros
     'django_bootstrap5',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth_suap',
 ]
 
 MIDDLEWARE = [
@@ -52,7 +60,23 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    "allauth.account.middleware.AccountMiddleware",
 ]
+
+
+SOCIALACCOUNT_PROVIDERS = {
+    "suap": {
+        "SUAP_URL": "https://suap.ifrn.edu.br",
+        "SCOPE": ["identificacao", "email"],
+        "APP": {
+            "client_id": config('SUAP_CLIENT_ID'),
+            "secret": config('SUAP_CLIENT_SECRET'),
+            "settings": {"hidden": True},
+        }
+    }
+}
+
 
 ROOT_URLCONF = 'config.urls'
 
@@ -69,6 +93,11 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
@@ -122,4 +151,17 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 # URL login page
-LOGIN_URL = '/users/login'
+LOGIN_URL = '/accounts/login'
+
+# Redirecionamento após login bem-sucedido
+LOGIN_REDIRECT_URL = '/dashboard'
+
+# Django sites framework (required by allauth)
+SITE_ID = 1
+
+# Allauth configuration
+ACCOUNT_SIGNUP_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+ACCOUNT_LOGIN_METHODS = {'username', 'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
+SOCIALACCOUNT_AUTO_SIGNUP = True

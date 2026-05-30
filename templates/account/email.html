@@ -1,0 +1,39 @@
+{% extends "allauth/layouts/base.html" %}
+
+{% load django_bootstrap5 %}
+
+{% block head_title %}Gerenciar Email{% endblock %}
+
+{% block header %}
+    <h2>Gerenciar Email</h2>
+{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            {% if user.emailaddress_set.all %}
+                <h4>Endereços de email cadastrados:</h4>
+                <div class="list-group mb-4">
+                    {% for emailaddress in user.emailaddress_set.all %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ emailaddress.email }}</strong>
+                                    {% if emailaddress.verified %}
+                                        <span class="badge bg-success">Verificado</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Não verificado</span>
+                                    {% endif %}
+                                    {% if emailaddress.primary %}
+                                        <span class="badge bg-primary">Principal</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <a href="{% url 'account_email' %}" class="btn btn-primary">Voltar</a>
+        </div>
+    </div>
+{% endblock %}

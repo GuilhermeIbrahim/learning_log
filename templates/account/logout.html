@@ -1,0 +1,22 @@
+{% extends "allauth/layouts/base.html" %}
+
+{% load django_bootstrap5 %}
+
+{% block head_title %}Sair{% endblock %}
+
+{% block header %}
+    <h2>Confirme que deseja sair.</h2>
+{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <p>Tem certeza que deseja sair?</p>
+            <form method="post" class="d-flex gap-2">
+                {% csrf_token %}
+                {% bootstrap_button button_type="submit" content="Sim, sair" %}
+                <a href="{% url 'index' %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}
