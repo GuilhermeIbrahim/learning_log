@@ -1,0 +1,25 @@
+{% extends "allauth/layouts/base.html" %}
+
+{% load django_bootstrap5 %}
+{% load socialaccount %}
+
+{% block head_title %}Entrar{% endblock %}
+
+{% block content %}
+<div class="social-login-container">
+    {% if process == "connect" %}
+        <h1>Conectar à sua conta do {{ provider.name }}</h1>
+        <p>Você está prestes a conectar sua conta do site com sua conta do {{ provider.name }}.</p>
+    {% else %}
+        <h1>Entrar via {{ provider.name }}</h1>
+        <p>Você está prestes a fazer login usando sua conta do {{ provider.name }}.</p>
+    {% endif %}
+
+    
+    <form method="post">
+        {% csrf_token %}
+        {% bootstrap_button button_type="submit" extra_classes="btn-social-confirm" content="Continuar para o SUAP" %}
+    </form>
+
+</div>
+{% endblock %}
