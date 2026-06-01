@@ -1,0 +1,22 @@
+{% extends "allauth/layouts/base.html" %}
+
+{% load django_bootstrap5 %}
+
+{% block head_title %}Completar Cadastro{% endblock %}
+
+{% block header %}
+    <h2>Completar Cadastro</h2>
+{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <p>Complete seu cadastro para continuar:</p>
+            <form method="post" class="form">
+                {% csrf_token %}
+                {% bootstrap_form form %}
+                {% bootstrap_button button_type="submit" content="Continuar" %}
+            </form>
+        </div>
+    </div>
+{% endblock %}
