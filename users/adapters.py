@@ -14,7 +14,7 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
         extra = sociallogin.account.extra_data
         profile = user.profile
         profile.campus = extra.get('campus', '') or ''
-        profile.matricula = extra.get('matricula', '') or ''
-        profile.tipo_vinculo = extra.get('tipo_vinculo', '') or ''
-        profile.foto_url = extra.get('url_foto_75x100', '') or ''
+        profile.matricula = extra.get('identificacao', '') or ''
+        profile.tipo_vinculo = extra.get('tipo_usuario', '') or ''
+        profile.foto_url = extra.get('foto', '') or ''
         profile.save()
